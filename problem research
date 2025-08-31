@@ -1,0 +1,29 @@
+# image metadata
+## Image metadata categories
+Image metadata is often divided into three main categories:
+
+Technical metadata is mostly generated automatically by the device or software that creates the image. 
+For example, if the image is a photograph taken by a digital camera, the camera typically generates metadata about the camera and the photo's settings
+
+
+
+Descriptive metadata is mostly added manually using special software such as GIMP or Affinity Photo. The individual who creates or manages the image can use the software to add or edit the descriptive metadata. 
+
+
+
+
+Administrative metadata is like descriptive metadata with most of the metadata information added manually using special software. The metadata might include usage and licensing rights, restrictions on reuse or contact information for the image owner. 
+
+
+Examples of visual metadata include the following:
+
+File type and size.
+Description.
+Date created.
+Camera settings.
+Creator and uploader.
+Relevant keywords.
+Expiration date.
+Licensing details.
+Restrictions on use.
+Rights management information.
