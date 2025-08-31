@@ -1,69 +1,27 @@
-🛡️ Defensive Communication Security Toolkit
+# 🛡️ Defensive Communication Security Toolkit  
+**Defending Against Metadata Leaks & Covert Channels**
 
-Defending Communication Systems Against Metadata Leaks & Covert Channels
+---
 
-📖 Overview
+## 📖 Overview
+This project provides a **two-layer defensive system** to protect communication channels from common espionage threats:  
 
-This project is a defensive cybersecurity toolkit designed to protect communication systems from two critical threats often exploited in espionage and intelligence operations:
+1. **Metadata Leak Prevention System (MLPS)**  
+   - Scrubs sensitive metadata from files, emails, and documents before transmission.  
+   - Prevents adversaries from extracting operational security (OPSEC) details such as device info, geolocation, software versions, and communication patterns.  
 
-Metadata Leaks – Hidden data in files, emails, and documents (e.g., EXIF, email headers, PDF properties) that can unintentionally reveal sensitive information.
+2. **Defensive Steganography Scanner (DSS)**  
+   - Detects hidden data embedded in images, audio, and documents (steganography).  
+   - Protects against covert exfiltration techniques often used in cyber-espionage.  
 
-Covert Channels (Steganography) – Hidden messages embedded inside images, audio, or documents used for secret data exfiltration.
+Together, these tools provide a **defensive shield for secure communications** against adversarial intelligence collection.  
 
-The toolkit provides:
+---
 
-A Metadata Scrubbing Proxy: Removes sensitive metadata before transmission.
+## 🎯 Objectives
+- Prevent **metadata-based intelligence gathering**.  
+- Detect and mitigate **covert communication channels**.  
+- Provide a **dashboard for operators** to monitor communication artifacts and ensure they are sanitized before release.  
+- Demonstrate **practical defensive measures** in the field of communication cybersecurity.  
 
-A Defensive Steganography Scanner: Detects suspicious hidden content in media and files.
-
-A Visualization Dashboard: Logs and displays threats detected and mitigated.
-
-This project demonstrates both defensive engineering and forensic analysis of communication systems.
-
-⚡ Features
-
-✔️ Metadata Leak Prevention
-
-Strips EXIF data from images
-
-Removes hidden properties from PDFs/DOCX
-
-Sanitizes email headers (Received paths, X-Mailer, IPs)
-
-✔️ Covert Channel Defense (Steganalysis)
-
-Detects hidden messages in images (LSB analysis, chi-square test)
-
-Flags anomalies in audio files (frequency domain analysis)
-
-Identifies suspicious formatting in PDFs
-
-✔️ Visualization Dashboard
-
-Displays logs of scrubbed files
-
-Shows steganography detection alerts
-
-Supports search & filtering
-
-✔️ Forensic Reports
-
-Logs “before vs after” metadata stripping
-
-Records detection events with timestamps
-
-🏗️ Architecture
-                ┌─────────────────────┐
-   Files/Msgs → │ Metadata Scrubber   │ → Cleaned Comms
-                └─────────────────────┘
-                          │
-                          ▼
-                ┌─────────────────────┐
-                │ Stego Scanner       │ → Alert if hidden data
-                └─────────────────────┘
-                          │
-                          ▼
-                ┌─────────────────────┐
-                │ Dashboard + DB      │
-                │ (Logs & Reports)    │
-                └─────────────────────┘
+---
