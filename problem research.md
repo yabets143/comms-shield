@@ -68,7 +68,7 @@ Content-type: This field indicates whether the email was written in plain text o
 
 Message body: The major material of an email is displayed in this field.
 
-<img width="940" height="574" alt="image" src="https://github.com/user-attachments/assets/0d90be0d-d6de-4b9d-9882-e730b6918365" />
+<img width="940" height="574" alt="image" src="https://github.com/user-attachments/assets/0d90be0d-d6de-4b9d-9882-e730b6918365" /
 
 Email metadata is the hidden information automatically attached to an email message, including:
 Sender and recipient details: Names, email addresses, CC/BCC lists. 
