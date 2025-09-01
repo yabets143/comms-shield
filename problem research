@@ -14,6 +14,13 @@ Descriptive metadata is mostly added manually using special software such as GIM
 
 Administrative metadata is like descriptive metadata with most of the metadata information added manually using special software. The metadata might include usage and licensing rights, restrictions on reuse or contact information for the image owner. 
 
+## Image metadata formats
+Various standardized formats are used to store image metadata. Here are the most common ones:
+
+**Exchangeable Image File (EXIF or Exif)**. The EXIF format is used extensively in digital cameras, smartphones and other devices when generating image metadata.
+
+**Information Interchange Model (IIM)**. The metadata in IIM provides individuals and organizations with a way to add details to images such as titles, genres, instructions, owners or creators, location and contact information, copyright and attribution specifications, and similar types of information. 
+**International Color Consortium (ICC)**. This metadata includes details about the color profile embedded in an image. 
 
 Examples of visual metadata include the following:
 
