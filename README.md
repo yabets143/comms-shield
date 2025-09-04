@@ -34,3 +34,29 @@ Together, these tools provide a **defensive shield for secure communications** a
 ✅ Dashboard with logs, alerts, and reports.  
 
 ---
+# Arcitechture 
+
+                   ┌───────────────────────────┐
+                   │  User Communication Input  │
+                   │ (Email, File, Media, Chat) │
+                   └───────────────┬───────────┘
+                                   │
+                ┌──────────────────┴───────────────────┐
+                │                                      │
+      ┌─────────▼─────────┐                  ┌─────────▼─────────┐
+      │ Metadata Scrubber │                  │ Steganography Scan │
+      │ (strip EXIF,      │                  │ (LSB, audio, text) │
+      │ headers, doc info)│                  └─────────┬─────────┘
+      └─────────┬─────────┘                            │
+                │                                      │
+                └──────────────────┬───────────────────┘
+                                   │
+                        ┌──────────▼──────────┐
+                        │   Logging & Report  │
+                        │   (SQLite/Postgres) │
+                        └──────────┬──────────┘
+                                   │
+                          ┌────────▼────────┐
+                          │   Dashboard     │
+                          │ (Flask/FastAPI) │
+                          └─────────────────┘
