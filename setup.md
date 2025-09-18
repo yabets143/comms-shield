@@ -1,21 +1,27 @@
 Setup Commands:
 
 # Create venv
-python3 -m venv comms_defense_env
+python3 -m venv env
 source comms_defense_env/bin/activate
 
 # Install dependencies
-pip install scapy pillow scipy python-docx PyPDF2 stegano opencv-python flask fastapi uvicorn sqlite3
+pip install -r requirments.txt
 
 
 # to activate when starting after the installation 
 // for windows
-> .\comms_defense_env\Scripts\activate
+> .\env\Scripts\activate
 // for linux
-> source ./comms_deffense_env/bin/activate
+> source ./env/bin/activate
 
 
 
 # dependencies 
 
-python3 -m pip install hachoir pillow
+requirments.txt
+
+
+# for windows 
+
+pip install httpie
+

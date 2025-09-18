@@ -3,3 +3,53 @@
 # Ignore all Python bytecode files
 __pycache__/
 
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.eggs/
+*.log
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.env
+.comms_defense_env/   # your custom venv
+comms_defense_env/
+
+# IDE / Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build / packaging
+build/
+dist/
+*.spec
+
+# FastAPI / Uvicorn
+*.db
+*.sqlite3
+
+# Unit test / coverage
+.coverage
+.pytest_cache/
+htmlcov/
+.cache/
+
+# Temp files
+*.tmp
+*.bak
+*.orig
