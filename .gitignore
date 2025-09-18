@@ -1,0 +1,5 @@
+.comms_defense_env
+
+# Ignore all Python bytecode files
+__pycache__/
+
