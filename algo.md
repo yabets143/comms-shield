@@ -1,0 +1,4 @@
+- accept file from CLI 
+- then read the meta data of the file for hidden things 
+- then remove any metadata 
+- output the clean file 
