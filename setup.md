@@ -2,7 +2,8 @@ Setup Commands:
 
 # Create venv
 python3 -m venv env
-source comms_defense_env/bin/activate
+
+source env/bin/activate
 
 # Install dependencies
 pip install -r requirments.txt
