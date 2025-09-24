@@ -7,6 +7,8 @@ source env/bin/activate
 
 # Install dependencies
 pip install -r requirments.txt
+or 
+pip install pillow hachoir mutagen pikepdf fastapi uvicorn python-multipart numpy matplotlib scipy steganography-tools sqlalchemy aiofiles
 
 
 # to activate when starting after the installation 
