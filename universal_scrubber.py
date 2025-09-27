@@ -6,7 +6,8 @@ from hachoir.parser import createParser
 from hachoir.metadata import extractMetadata
 from mutagen import File as MutagenFile
 import pikepdf
-
+import tempfile  
+import xml.etree.ElementTree as ET 
 
 def scrub_image(input_path: Path, output_path: Path):
     """Remove EXIF metadata from images."""
@@ -20,6 +21,14 @@ def scrub_image(input_path: Path, output_path: Path):
 def scrub_pdf(input_path: Path, output_path: Path):
     """Remove metadata from PDFs."""
     with pikepdf.open(input_path) as pdf:
+        if '/Metadata' in pdf.Root:
+            del pdf.Root.Metadata
+            
+            # Remove producer/creator info explicitly
+        if '/Producer' in pdf.docinfo:
+            del pdf.docinfo.Producer
+        if '/Creator' in pdf.docinfo:
+            del pdf.docinfo.Creator
         pdf.save(output_path, minimize=True, encryption=False)
 
 
@@ -51,7 +60,124 @@ def scrub_office(input_path: Path, output_path: Path):
             for file in Path(tmpdir).rglob("*"):
                 zout.write(file, file.relative_to(tmpdir))
 
+def scrub_docx_images(docx_path: Path, temp_dir: Path):
+    """Scrub metadata from images embedded in DOCX."""
+    try:
+        media_dir = temp_dir / 'word' / 'media'
+        if media_dir.exists():
+            for img_file in media_dir.glob('*.*'):
+                if img_file.suffix.lower() in ['.jpg', '.jpeg', '.png', '.tiff', '.bmp']:
+                    try:
+                        scrub_image(img_file, img_file)
+                        print(f"[INFO] Scrubbed embedded image: {img_file.name}")
+                    except Exception as e:
+                        print(f"[WARN] Failed to scrub embedded image {img_file}: {e}")
+        
+        # Also check for images in headers/footers
+        for rels_dir in temp_dir.glob('**/rels'):
+            for rels_file in rels_dir.glob('*.rels'):
+                try:
+                    tree = ET.parse(rels_file)
+                    root = tree.getroot()
+                    # You could parse relationships to find embedded images here
+                    # This is a simplified version
+                except:
+                    pass
+                    
+    except Exception as e:
+        print(f"[WARN] DOCX image scrub failed: {e}")
 
+def scrub_pdf_images(pdf_path: Path):
+    """Remove metadata from images embedded in PDF."""
+    try:
+        with pikepdf.open(pdf_path) as pdf:
+            for page in pdf.pages:
+                if '/Resources' in page and '/XObject' in page.Resources:
+                    xobjects = page.Resources.XObject
+                    for obj_name in xobjects:
+                        xobj = xobjects[obj_name]
+                        if xobj.Subtype == '/Image':
+                            # Remove image metadata by recompressing
+                            if '/Metadata' in xobj:
+                                del xobj.Metadata
+                            # You can add more specific image metadata removal here
+            return pdf
+    except Exception as e:
+        print(f"[WARN] PDF image scrub failed: {e}")
+        return None       
+def scrub_pdf(input_path: Path, output_path: Path):
+    """Remove metadata from PDFs including embedded images."""
+    try:
+        # First pass: remove PDF metadata
+        with pikepdf.open(input_path) as pdf:
+            # Remove all metadata
+            if '/Metadata' in pdf.Root:
+                del pdf.Root.Metadata
+            
+            # Remove producer and creator info
+            if '/Producer' in pdf.docinfo:
+                del pdf.docinfo.Producer
+            if '/Creator' in pdf.docinfo:
+                del pdf.docinfo.Creator
+            if '/CreationDate' in pdf.docinfo:
+                del pdf.docinfo.CreationDate
+            if '/ModDate' in pdf.docinfo:
+                del pdf.docinfo.ModDate
+            
+            # Remove embedded files
+            if '/Names' in pdf.Root and '/EmbeddedFiles' in pdf.Root.Names:
+                del pdf.Root.Names.EmbeddedFiles
+            
+            pdf.save(output_path, minimize=True, encryption=False, object_stream_mode=pikepdf.ObjectStreamMode.disable)
+        
+        # Second pass: scrub embedded images
+        scrubbed_pdf = scrub_pdf_images(output_path)
+        if scrubbed_pdf:
+            scrubbed_pdf.save(output_path, minimize=True, encryption=False)
+            
+    except Exception as e:
+        print(f"[ERROR] PDF scrub failed: {e}")
+        shutil.copy(input_path, output_path)
+    """Remove metadata from PDFs."""
+    with pikepdf.open(input_path) as pdf:
+        if '/Metadata' in pdf.Root:
+            del pdf.Root.Metadata
+            
+            # Remove producer/creator info explicitly
+        if '/Producer' in pdf.docinfo:
+            del pdf.docinfo.Producer
+        if '/Creator' in pdf.docinfo:
+            del pdf.docinfo.Creator
+        pdf.save(output_path, minimize=True, encryption=False)
+        scrubbed_pdf = scrub_pdf_images(output_path)
+        if scrubbed_pdf:
+            scrubbed_pdf.save(output_path, minimize=True, encryption=False)
+def scrub_office(input_path: Path, output_path: Path):
+    """Remove metadata from Office docs including embedded images."""
+    import zipfile
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir_path = Path(tmpdir)
+        
+        # Extract DOCX
+        with zipfile.ZipFile(input_path, "r") as zin:
+            zin.extractall(tmpdir)
+
+        # Remove core metadata files
+        for meta_file in ["docProps/core.xml", "docProps/app.xml", "docProps/custom.xml"]:
+            target = tmpdir_path / meta_file
+            if target.exists():
+                target.unlink()
+
+        # Scrub embedded images
+        scrub_docx_images(input_path, tmpdir_path)
+
+        # Create new DOCX
+        with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as zout:
+            for file in tmpdir_path.rglob("*"):
+                if file.is_file():
+                    arcname = file.relative_to(tmpdir_path)
+                    zout.write(file, arcname)
 def scrub_generic(input_path: Path, output_path: Path):
     """Fallback scrubber - just copies file."""
     shutil.copy(input_path, output_path)
@@ -115,7 +241,7 @@ def main():
 
         if args.show:
             show_metadata(path)
-
+        show_metadata(path)
         detect_and_scrub(path)
 
 
