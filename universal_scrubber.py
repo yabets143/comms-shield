@@ -9,6 +9,15 @@ import pikepdf
 import tempfile  
 import xml.etree.ElementTree as ET 
 
+
+try:
+    from metadata_analyzer import show_comprehensive_metadata
+    METADATA_ANALYZER_AVAILABLE = True
+except ImportError:
+    METADATA_ANALYZER_AVAILABLE = False
+    print("[INFO] Advanced metadata analyzer not available")
+
+
 def scrub_image(input_path: Path, output_path: Path):
     """Remove EXIF metadata from images."""
     with Image.open(input_path) as img:
@@ -165,19 +174,12 @@ def detect_and_scrub(file_path: Path):
 
 
 def show_metadata(file_path: Path):
-    """Extract and print metadata with hachoir (if any)."""
-    parser = createParser(str(file_path))
-    if not parser:
-        print(f"[WARN] Cannot parse metadata for {file_path}")
-        return
-
-    metadata = extractMetadata(parser)
-    if metadata:
-        print(f"\n--- Metadata for {file_path} ---")
-        for item in metadata.exportPlaintext():
-            print(item)
+    """Show metadata using the comprehensive analyzer."""
+    if METADATA_ANALYZER_AVAILABLE:
+        show_comprehensive_metadata(file_path)
     else:
-        print(f"\n--- No metadata found in {file_path} ---")
+        # Fallback to basic metadata display
+        show_basic_metadata(file_path)
 
 
 def main():
