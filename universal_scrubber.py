@@ -18,20 +18,6 @@ def scrub_image(input_path: Path, output_path: Path):
         clean.save(output_path, format=img.format)
 
 
-def scrub_pdf(input_path: Path, output_path: Path):
-    """Remove metadata from PDFs."""
-    with pikepdf.open(input_path) as pdf:
-        if '/Metadata' in pdf.Root:
-            del pdf.Root.Metadata
-            
-            # Remove producer/creator info explicitly
-        if '/Producer' in pdf.docinfo:
-            del pdf.docinfo.Producer
-        if '/Creator' in pdf.docinfo:
-            del pdf.docinfo.Creator
-        pdf.save(output_path, minimize=True, encryption=False)
-
-
 def scrub_audio_video(input_path: Path, output_path: Path):
     """Remove metadata from audio/video (MP3, MP4, etc.)."""
     media = MutagenFile(input_path, easy=True)
@@ -40,25 +26,6 @@ def scrub_audio_video(input_path: Path, output_path: Path):
         media.save()
     shutil.copy(input_path, output_path)
 
-
-def scrub_office(input_path: Path, output_path: Path):
-    """Remove metadata from Office docs (DOCX, XLSX, PPTX)."""
-    import zipfile
-    import tempfile
-
-    with tempfile.TemporaryDirectory() as tmpdir:
-        with zipfile.ZipFile(input_path, "r") as zin:
-            zin.extractall(tmpdir)
-
-        # Remove metadata files
-        for meta_file in ["docProps/core.xml", "docProps/app.xml"]:
-            target = Path(tmpdir) / meta_file
-            if target.exists():
-                target.unlink()
-
-        with zipfile.ZipFile(output_path, "w") as zout:
-            for file in Path(tmpdir).rglob("*"):
-                zout.write(file, file.relative_to(tmpdir))
 
 def scrub_docx_images(docx_path: Path, temp_dir: Path):
     """Scrub metadata from images embedded in DOCX."""
@@ -128,30 +95,17 @@ def scrub_pdf(input_path: Path, output_path: Path):
             if '/Names' in pdf.Root and '/EmbeddedFiles' in pdf.Root.Names:
                 del pdf.Root.Names.EmbeddedFiles
             
-            pdf.save(output_path, minimize=True, encryption=False, object_stream_mode=pikepdf.ObjectStreamMode.disable)
+            # Use this instead of minimize=True for older pikepdf versions
+            pdf.save(output_path, encryption=False, object_stream_mode=pikepdf.ObjectStreamMode.disable)
         
         # Second pass: scrub embedded images
         scrubbed_pdf = scrub_pdf_images(output_path)
         if scrubbed_pdf:
-            scrubbed_pdf.save(output_path, minimize=True, encryption=False)
+            scrubbed_pdf.save(output_path, encryption=False)
             
     except Exception as e:
         print(f"[ERROR] PDF scrub failed: {e}")
         shutil.copy(input_path, output_path)
-    """Remove metadata from PDFs."""
-    with pikepdf.open(input_path) as pdf:
-        if '/Metadata' in pdf.Root:
-            del pdf.Root.Metadata
-            
-            # Remove producer/creator info explicitly
-        if '/Producer' in pdf.docinfo:
-            del pdf.docinfo.Producer
-        if '/Creator' in pdf.docinfo:
-            del pdf.docinfo.Creator
-        pdf.save(output_path, minimize=True, encryption=False)
-        scrubbed_pdf = scrub_pdf_images(output_path)
-        if scrubbed_pdf:
-            scrubbed_pdf.save(output_path, minimize=True, encryption=False)
 def scrub_office(input_path: Path, output_path: Path):
     """Remove metadata from Office docs including embedded images."""
     import zipfile
