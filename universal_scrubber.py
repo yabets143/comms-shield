@@ -149,7 +149,12 @@ def scrub_generic(input_path: Path, output_path: Path):
 def detect_and_scrub(file_path: Path):
     """Detect file type and scrub accordingly."""
     suffix = file_path.suffix.lower()
-    scrubbed_path = file_path.with_name(f"scrubbed_{file_path.name}")
+    # Create downloads directory if it doesn't exist
+    downloads_dir = Path("downloads")
+    downloads_dir.mkdir(exist_ok=True)
+    
+    # Save scrubbed file to downloads directory
+    scrubbed_path = downloads_dir / f"scrubbed_{file_path.name}"
 
     try:
         if suffix in [".jpg", ".jpeg", ".png", ".tiff", ".bmp", ".gif"]:

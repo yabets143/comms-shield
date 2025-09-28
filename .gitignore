@@ -1,5 +1,6 @@
 .comms_defense_env
-
+upload
+uploads
 # Ignore all Python bytecode files
 __pycache__/
 

@@ -9,3 +9,5 @@ numpy
 matplotlib
 scipy
 steganography-tools
+sqlalchemy
+aiofiles

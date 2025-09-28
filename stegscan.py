@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# stegscan.py
 import sys
 from PIL import Image
 import numpy as np

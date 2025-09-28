@@ -30,3 +30,17 @@ requirments.txt
 
 pip install httpie
 
+
+# set up enviroment variabls
+export PROXY_API_KEY="a-strong-random-key"
+export MAX_FILE_BYTES=26214400   # 25MB
+export ALLOWED_EXTENSIONS="jpg,jpeg,png,pdf,txt"
+export SCRUB_TIMEOUT=20
+export SCRUB_MEMORY_LIMIT_MB=300
+export OUTBOX_DIR="./outbox"
+export DB_PATH="./proxy_logs.db"
+
+
+
+# to start 
+uvicorn app:app --host 0.0.0.0 --port 8000 --workers 1
