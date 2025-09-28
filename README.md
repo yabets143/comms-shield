@@ -53,10 +53,52 @@ Together, these tools provide a **defensive shield for secure communications** a
                                    │
                         ┌──────────▼──────────┐
                         │   Logging & Report  │
-                        │   (SQLite/Postgres) │
+                        │   (SQLite) │
                         └──────────┬──────────┘
                                    │
                           ┌────────▼────────┐
                           │   Dashboard     │
-                          │ (Flask/FastAPI) │
+                          │ (FastAPI) │
                           └─────────────────┘
+
+---
+# Usage 
+
+## installation 
+
+clone the repo
+```
+git clone <repo-link>
+cd comms-shield
+```
+create virtual enviroments (recommended)
+
+```
+python -m venv env
+
+
+#for windows
+.\env\Scripts\activate
+
+# for linux
+source env/bin/activate 
+```
+
+
+install dependecies 
+
+```
+pip install -r requirments.txt
+```
+
+## to run the UI 
+
+```
+python proxy.py
+```
+
+## to use the universal scrubber on terminal 
+
+```
+python universal_scrubber.py <your-file>
+```
