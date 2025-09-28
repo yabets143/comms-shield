@@ -56,6 +56,16 @@
           grid-template-columns: 1fr;
         }
       }
+      .upload-section {
+    grid-column: 1 / -1; /* Span full width */
+    justify-self: center; /* Center this specific grid item */
+    width: 100%;
+    max-width: 600px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 25px;
+    border: 2px dashed #dee2e6;
+}
 
       .upload-section,
       .logs-section,
@@ -65,9 +75,6 @@
         border-radius: 10px;
         padding: 25px;
         border: 2px dashed #dee2e6;
-      }
-      .upload-section{
-        justify-contents: center
       }
 
       .logs-section,
