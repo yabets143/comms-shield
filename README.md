@@ -7,11 +7,11 @@
 
 This project provides a Metadata Leak Prevention System (MLPS) to protect communication channels and file workflows from espionage threats:
 
-Scrubs sensitive metadata from files, emails, and documents before transmission.
+- Scrubs sensitive metadata from files, emails, and documents before transmission.
 
-Monitors a selected folder in real time and automatically scrubs any files placed inside.
+- Monitors a selected folder in real time and automatically scrubs any files placed inside.
 
-Prevents adversaries from extracting operational security (OPSEC) details such as device info, geolocation, software versions, and communication patterns.
+- Prevents adversaries from extracting operational security (OPSEC) details such as device info, geolocation, software versions, and communication patterns.
 
 Together, these capabilities provide a defensive shield for secure communications against adversarial intelligence collection.
 
@@ -28,9 +28,13 @@ Together, these capabilities provide a defensive shield for secure communication
 ## ⚙️ Features
 
 ✅ Folder Watcher – continuously monitors a user-selected folder and scrubs all files dropped in.
+
 ✅ Strip EXIF metadata from images (JPEG, PNG).
+
 ✅ Remove metadata from PDFs & DOCX files.
+
 ✅ Sanitize email headers before sending.
+
 ✅ Dashboard with logs, alerts, and reports.
 
 ### future extensions
