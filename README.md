@@ -41,7 +41,6 @@ Together, these capabilities provide a defensive shield for secure communication
 ✅ Detect LSB-based image steganography.  
 ✅ Detect anomalies in audio frequency patterns.  
 ✅ Identify suspicious spacing/encoding in PDFs.  
-✅ Dashboard with logs, alerts, and reports.  
 
 ---
 # Usage 
