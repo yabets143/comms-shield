@@ -99,6 +99,12 @@ def scrub_pdf(input_path: Path, output_path: Path):
                 del pdf.docinfo.CreationDate
             if '/ModDate' in pdf.docinfo:
                 del pdf.docinfo.ModDate
+            if '/Author' in pdf.docinfo:
+                del pdf.docinfo.Author
+            if '/Keywords' in pdf.docinfo:
+                del pdf.docinfo.Keywords
+            if '/Title' in pdf.docinfo:
+                del pdf.docinfo.Title
             
             # Remove embedded files
             if '/Names' in pdf.Root and '/EmbeddedFiles' in pdf.Root.Names:

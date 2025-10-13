@@ -11,7 +11,6 @@ import sys
 import io
 from contextlib import redirect_stdout
 
-# Import your existing scrubber module and metadata analyzer
 from universal_scrubber import detect_and_scrub
 from metadata_analyzer import show_comprehensive_metadata
 
