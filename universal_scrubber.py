@@ -64,62 +64,68 @@ def scrub_docx_images(docx_path: Path, temp_dir: Path):
         print(f"[WARN] DOCX image scrub failed: {e}")
 
 def scrub_pdf_images(pdf_path: Path):
-    """Remove metadata from images embedded in PDF."""
+    """Remove metadata from images embedded in PDF. Returns path to scrubbed file."""
     try:
         with pikepdf.open(pdf_path) as pdf:
+            modified = False
             for page in pdf.pages:
                 if '/Resources' in page and '/XObject' in page.Resources:
                     xobjects = page.Resources.XObject
-                    for obj_name in xobjects:
+                    for obj_name in list(xobjects.keys()):  # Use list to avoid modification during iteration
                         xobj = xobjects[obj_name]
                         if xobj.Subtype == '/Image':
                             # Remove image metadata by recompressing
                             if '/Metadata' in xobj:
                                 del xobj.Metadata
-                            # You can add more specific image metadata removal here
-            return pdf
+                                modified = True
+            if modified:
+                # Save to temporary file
+                temp_path = pdf_path.parent / f"temp_{pdf_path.name}"
+                pdf.save(temp_path, encryption=False, object_stream_mode=pikepdf.ObjectStreamMode.disable)
+                return temp_path
+            return None
     except Exception as e:
         print(f"[WARN] PDF image scrub failed: {e}")
-        return None       
+        return None
 def scrub_pdf(input_path: Path, output_path: Path):
     """Remove metadata from PDFs including embedded images."""
     try:
         # First pass: remove PDF metadata
-        with pikepdf.open(input_path) as pdf:
+        with pikepdf.open(input_path, allow_overwriting_input=True) as pdf:
             # Remove all metadata
             if '/Metadata' in pdf.Root:
                 del pdf.Root.Metadata
             
-            # Remove producer and creator info
-            if '/Producer' in pdf.docinfo:
-                del pdf.docinfo.Producer
-            if '/Creator' in pdf.docinfo:
-                del pdf.docinfo.Creator
-            if '/CreationDate' in pdf.docinfo:
-                del pdf.docinfo.CreationDate
-            if '/ModDate' in pdf.docinfo:
-                del pdf.docinfo.ModDate
-            if '/Author' in pdf.docinfo:
-                del pdf.docinfo.Author
-            if '/Keywords' in pdf.docinfo:
-                del pdf.docinfo.Keywords
-            if '/Title' in pdf.docinfo:
-                del pdf.docinfo.Title
+            # Remove all docinfo entries systematically
+            for key in list(pdf.docinfo.keys()):
+                del pdf.docinfo[key]
             
             # Remove embedded files
             if '/Names' in pdf.Root and '/EmbeddedFiles' in pdf.Root.Names:
                 del pdf.Root.Names.EmbeddedFiles
             
-            # Use this instead of minimize=True for older pikepdf versions
-            pdf.save(output_path, encryption=False, object_stream_mode=pikepdf.ObjectStreamMode.disable)
+            # Save first pass
+            temp_path = output_path.parent / f"temp_first_{output_path.name}"
+            pdf.save(temp_path, encryption=False, object_stream_mode=pikepdf.ObjectStreamMode.disable)
         
         # Second pass: scrub embedded images
-        scrubbed_pdf = scrub_pdf_images(output_path)
-        if scrubbed_pdf:
-            scrubbed_pdf.save(output_path, encryption=False)
+        final_pdf = scrub_pdf_images(temp_path)
+        if final_pdf:
+            # If image scrubbing created a new file, use it
+            shutil.move(final_pdf, output_path)
+            # Clean up temp file
+            if temp_path.exists():
+                temp_path.unlink()
+        else:
+            # No image scrubbing needed, just move the temp file
+            shutil.move(temp_path, output_path)
             
     except Exception as e:
         print(f"[ERROR] PDF scrub failed: {e}")
+        # Clean up any temp files
+        temp_path = output_path.parent / f"temp_first_{output_path.name}"
+        if temp_path.exists():
+            temp_path.unlink()
         shutil.copy(input_path, output_path)
 def scrub_office(input_path: Path, output_path: Path):
     """Remove metadata from Office docs including embedded images."""
@@ -152,7 +158,7 @@ def scrub_generic(input_path: Path, output_path: Path):
     shutil.copy(input_path, output_path)
 
 
-def detect_and_scrub(file_path: Path):
+def detect_and_scrub(file_path: Path,output_path: Path = None):
     """Detect file type and scrub accordingly."""
     suffix = file_path.suffix.lower()
     # Create downloads directory if it doesn't exist
@@ -161,6 +167,10 @@ def detect_and_scrub(file_path: Path):
     
     # Save scrubbed file to downloads directory
     scrubbed_path = downloads_dir / f"scrubbed_{file_path.name}"
+    if output_path is None:
+        downloads_dir = Path("downloads")
+        downloads_dir.mkdir(exist_ok=True)
+        output_path = downloads_dir / f"scrubbed_{file_path.name}"
 
     try:
         if suffix in [".jpg", ".jpeg", ".png", ".tiff", ".bmp", ".gif"]:
