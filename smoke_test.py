@@ -15,11 +15,11 @@ import tempfile
 from contextlib import redirect_stdout
 from pathlib import Path
 
-# Ensure src modules are importable
+# Ensure src package is importable
 ROOT = Path(__file__).parent
-sys.path.append(str(ROOT / "src"))
+sys.path.append(str(ROOT))
 
-from core.scrubber import UniversalScrubber
+from src.core.scrubber import UniversalScrubber
 from metadata_analyzer import show_comprehensive_metadata
 from watcher import process_existing_files, watch_folder, clean_folder
 

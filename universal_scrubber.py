@@ -158,40 +158,37 @@ def scrub_generic(input_path: Path, output_path: Path):
     shutil.copy(input_path, output_path)
 
 
-def detect_and_scrub(file_path: Path,output_path: Path = None):
+def detect_and_scrub(file_path: Path, output_path: Path = None):
     """Detect file type and scrub accordingly."""
     suffix = file_path.suffix.lower()
-    # Create downloads directory if it doesn't exist
-    downloads_dir = Path("downloads")
-    downloads_dir.mkdir(exist_ok=True)
-    
-    # Save scrubbed file to downloads directory
-    scrubbed_path = downloads_dir / f"scrubbed_{file_path.name}"
+
     if output_path is None:
         downloads_dir = Path("downloads")
         downloads_dir.mkdir(exist_ok=True)
         output_path = downloads_dir / f"scrubbed_{file_path.name}"
 
+    output_path.parent.mkdir(exist_ok=True)
+
     try:
         if suffix in [".jpg", ".jpeg", ".png", ".tiff", ".bmp", ".gif"]:
-            scrub_image(file_path, scrubbed_path)
+            scrub_image(file_path, output_path)
         elif suffix == ".pdf":
-            scrub_pdf(file_path, scrubbed_path)
+            scrub_pdf(file_path, output_path)
         elif suffix in [".mp3", ".flac", ".mp4", ".m4a", ".wav", ".ogg"]:
-            scrub_audio_video(file_path, scrubbed_path)
+            scrub_audio_video(file_path, output_path)
         elif suffix in [".docx", ".xlsx", ".pptx"]:
-            scrub_office(file_path, scrubbed_path)
+            scrub_office(file_path, output_path)
         else:
-            scrub_generic(file_path, scrubbed_path)
+            scrub_generic(file_path, output_path)
 
-        print(f"[INFO] Scrubbed file saved → {scrubbed_path}")
+        print(f"[INFO] Scrubbed file saved → {output_path}")
 
         # Always show metadata AFTER scrubbing
-        show_metadata(scrubbed_path)
+        show_metadata(output_path)
 
     except Exception as e:
         print(f"[ERROR] Failed to scrub {file_path}: {e}")
-        scrub_generic(file_path, scrubbed_path)
+        scrub_generic(file_path, output_path)
 
 
 def show_metadata(file_path: Path):

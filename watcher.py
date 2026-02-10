@@ -9,7 +9,7 @@ from universal_scrubber import detect_and_scrub
 
 # Global state
 watch_folder = Path("watch_folder")
-clean_folder = Path("clean")
+clean_folder = watch_folder / "clean"
 is_watcher_active = False
 file_observer = None
 watcher_logs = []
@@ -130,7 +130,7 @@ def stop_file_watcher():
 
 def set_watch_folder(folder_path):
     """Set a new folder to watch"""
-    global watch_folder
+    global watch_folder, clean_folder
     
     try:
         new_folder = Path(folder_path)
@@ -138,6 +138,8 @@ def set_watch_folder(folder_path):
             return {"status": "error", "message": "Folder does not exist"}
         
         watch_folder = new_folder
+        clean_folder = watch_folder / "clean"
+        clean_folder.mkdir(exist_ok=True)
         add_watcher_log(f"Watch folder set to: {watch_folder.absolute()}")
         
         # Restart watcher if it was running
