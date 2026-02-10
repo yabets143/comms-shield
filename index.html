@@ -525,7 +525,7 @@
 
       // Initialize drag and drop
       const uploadArea = document.getElementById("uploadArea");
-      const fileInput = document.getElementById("fileInput");
+      let fileInput = document.getElementById("fileInput");
       const scrubBtn = document.getElementById("scrubBtn");
       const progressBar = document.getElementById("progressBar");
       const progress = document.getElementById("progress");
@@ -598,6 +598,8 @@
                 <input type="file" id="fileInput" class="file-input" accept="*/*">
                 <button class="btn" onclick="document.getElementById('fileInput').click()">Choose File</button>
             `;
+        fileInput = document.getElementById("fileInput");
+        fileInput.addEventListener("change", handleFileSelect, false);
         scrubBtn.disabled = true;
         document.getElementById("status").innerHTML = "";
 
